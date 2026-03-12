@@ -1,0 +1,16 @@
+{
+	"compatibility_date": "2025-10-08",
+	"main": "src/index.ts",
+	"name": "themia-backend",
+	"upload_source_maps": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "f938541b-1e73-4f03-81b5-f7cbc4b83456",
+			"database_name": "themia-database"
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
+}
