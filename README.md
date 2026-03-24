@@ -10,6 +10,7 @@ D1 is Cloudflare's native serverless SQL database ([docs](https://developers.clo
 
 ```SQL
 SELECT * FROM comments LIMIT 3;
+SELECT key, name, type, lockType, size, copyrightLevel FROM categories LIMIT 10;
 ```
 
 The D1 database is initialized with a `comments` table and this data:
@@ -21,6 +22,10 @@ VALUES
     ('Serena', 'Great job!'),
     ('Max', 'Keep up the good work!')
 ;
+
+A `categories` table is also created and seeded with the categories provided in the integration feed (fields: `key`, `name`, `type`, `lockType`, `size`, `copyrightLevel`).
+
+The `resources` and `resource_categories` tables store resource metadata and the many-to-many links to categories. The Worker exposes `/resources?categoryKeyList=...&type=...&pageNum=1&pageSize=20` to query from D1.
 ```
 
 > [!IMPORTANT]
@@ -49,11 +54,36 @@ A live public deployment of this template is available at [https://d1-template.t
    npx wrangler d1 create d1-template-database
    ```
    ...and update the `database_id` field in `wrangler.json` with the new database ID.
-3. Run the following db migration to initialize the database (notice the `migrations` directory in this project):
+3. Run the following db migration to initialize the database (notice the `migrations` directory in this project). This applies the comments table (0001), the categories feed (0002), and the resources/link tables (0003):
    ```bash
    npx wrangler d1 migrations apply --remote d1-template-database
    ```
-4. Deploy the project!
+4. (Optional) Import resources from the external API into D1:
+   ```bash
+   pnpm import:resources   # local DB, type=9
+   # or remote:
+   node scripts/importResources.mjs --mode=remote --type=9 --pageSize=20 --concurrency=3
+   # or only generate SQL (no execute):
+   node scripts/importResources.mjs --mode=local --type=9 --out=import.sql
+   ```
+5. Deploy the project!
    ```bash
    npx wrangler deploy
    ```
+
+
+node scripts/importResources.js --mode=remote --type=1 --pageSize=50 --concurrency=2 --noTx \
+  --categoryKeys=BvQGZLySMM,X_Dfn04kXN,JHFXIsYJbS,cktMcsrvzX,Ls1IP6B_h7
+
+
+  node scripts/importResources.js --mode=remote --type=1 --pageSize=50 --concurrency=2 --noTx \
+  --categoryKeys=Ls1IP6B_h7
+
+  node scripts/importResources.js --mode=remote --type=1 --pageSize=50 --concurrency=2 --noTx \
+  --categoryKeys=cktMcsrvzX
+
+    node scripts/importResources.js --mode=remote --type=1 --pageSize=50 --concurrency=2 --noTx \
+  --categoryKeys=JHFXIsYJbS
+
+      node scripts/importResources.js --mode=remote --type=1 --pageSize=50 --concurrency=2 --noTx \
+  --categoryKeys=X_Dfn04kXN

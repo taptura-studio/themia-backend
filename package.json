@@ -26,6 +26,7 @@
 		"deploy": "wrangler deploy",
 		"dev": "pnpm seedLocalD1 && wrangler dev",
 		"predeploy": "wrangler d1 migrations apply DB --remote",
-		"seedLocalD1": "wrangler d1 migrations apply DB --local"
+		"seedLocalD1": "wrangler d1 migrations apply DB --local",
+		"import:resources": "node scripts/importResources.js --mode=local --type=9 --pageSize=20 --concurrency=3"
 	}
 }

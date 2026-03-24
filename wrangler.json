@@ -1,7 +1,8 @@
 {
 	"compatibility_date": "2025-10-08",
 	"main": "src/index.ts",
-	"name": "themia-backend",
+	"name": "themia",
+	"account_id": "512b73edafe17b85655f90f93d689dfd",
 	"upload_source_maps": true,
 	"d1_databases": [
 		{
